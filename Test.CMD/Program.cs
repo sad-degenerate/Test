@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Test.BL;
 
 namespace Test.CMD
@@ -30,6 +31,10 @@ namespace Test.CMD
                         Delete();
                         break;
 
+                    case "show all":
+                        ShowAll();
+                        break;
+
                     case "exit":
                         return;
 
@@ -39,6 +44,26 @@ namespace Test.CMD
                 }
 
                 Console.WriteLine();
+            }
+        }
+
+        private static void ShowAll()
+        {
+            var collections = Files.Load();
+
+            foreach(var collection in collections)
+            {
+                Console.WriteLine(collection.Theme + "\n");
+
+                foreach(var question in collection.Questions)
+                {
+                    Console.WriteLine("Вопрос №{0} - {1}", question.QuestionNumber, question.QuestionText);
+
+                    foreach(var answer in question.Answers)
+                    {
+                        Console.WriteLine("Ответ №{0} - {1} ({2})", answer.Number, answer.Text, answer.IsCorrect);
+                    }
+                }
             }
         }
 
@@ -52,6 +77,9 @@ namespace Test.CMD
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Добавление нового сборника вопросов.
+        /// </summary>
         private static void Add()
         {
             Console.Clear();
@@ -109,7 +137,7 @@ namespace Test.CMD
                     var answerText = Console.ReadLine();
 
                     Console.Write("Он правильный? (введите true или false): ");
-                    bool isCorrect = bool.Parse(Console.ReadLine());
+                    var isCorrect = bool.Parse(Console.ReadLine());
 
                     var answer = new Answer(j, answerText, isCorrect);
                     answers.Add(answer);
@@ -117,7 +145,7 @@ namespace Test.CMD
 
                 answers = CheckAnswers(answers);
 
-                var question = new Question(i + 1, text, answers);
+                var question = new Question(i, text, answers);
 
                 questions.Add(question);
             }
@@ -132,14 +160,18 @@ namespace Test.CMD
         /// <returns>Ответы.</returns>
         private static List<Answer> CheckAnswers(List<Answer> answers)
         {
-            var isTrue = false;
+            var count = 0;
+            foreach (var answer in answers)
+                if (answer.IsCorrect)
+                    count++;
 
-            foreach(var answer in answers)
+            if (count == 0)
+                answers.First().IsCorrect = true;
+            if(count > 1)
             {
-                if (answer.IsCorrect == true && isTrue == true)
+                foreach (var answer in answers)
                     answer.IsCorrect = false;
-                else
-                    isTrue = true;
+                answers.First().IsCorrect = true;
             }
 
             return answers;

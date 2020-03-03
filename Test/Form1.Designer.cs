@@ -56,6 +56,7 @@
             this.rbtnAnswer4.Size = new System.Drawing.Size(88, 24);
             this.rbtnAnswer4.TabIndex = 1;
             this.rbtnAnswer4.TabStop = true;
+            this.rbtnAnswer4.Tag = "4";
             this.rbtnAnswer4.Text = "Ответ 4";
             this.rbtnAnswer4.UseVisualStyleBackColor = true;
             // 
@@ -68,6 +69,7 @@
             this.rbtnAnswer3.Size = new System.Drawing.Size(88, 24);
             this.rbtnAnswer3.TabIndex = 2;
             this.rbtnAnswer3.TabStop = true;
+            this.rbtnAnswer3.Tag = "3";
             this.rbtnAnswer3.Text = "Ответ 3";
             this.rbtnAnswer3.UseVisualStyleBackColor = true;
             // 
@@ -80,6 +82,7 @@
             this.rbtnAnswer2.Size = new System.Drawing.Size(88, 24);
             this.rbtnAnswer2.TabIndex = 3;
             this.rbtnAnswer2.TabStop = true;
+            this.rbtnAnswer2.Tag = "2";
             this.rbtnAnswer2.Text = "Ответ 2";
             this.rbtnAnswer2.UseVisualStyleBackColor = true;
             // 
@@ -92,6 +95,7 @@
             this.rbtnAnswer1.Size = new System.Drawing.Size(88, 24);
             this.rbtnAnswer1.TabIndex = 4;
             this.rbtnAnswer1.TabStop = true;
+            this.rbtnAnswer1.Tag = "1";
             this.rbtnAnswer1.Text = "Ответ 1";
             this.rbtnAnswer1.UseVisualStyleBackColor = true;
             // 
@@ -117,6 +121,7 @@
             // 
             // btnSend
             // 
+            this.btnSend.Enabled = false;
             this.btnSend.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnSend.Location = new System.Drawing.Point(202, 316);
             this.btnSend.Name = "btnSend";
@@ -124,6 +129,7 @@
             this.btnSend.TabIndex = 7;
             this.btnSend.Text = "Ответить";
             this.btnSend.UseVisualStyleBackColor = true;
+            this.btnSend.Click += new System.EventHandler(this.Reply);
             // 
             // gbx
             // 
