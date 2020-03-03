@@ -10,7 +10,7 @@ namespace Test
         /// <summary>
         /// Номер текущего вопроса.
         /// </summary>
-        public int CurrentQuestionNumber { get; set; }
+        public int CurrentQuestionNumber { get; private set; }
         /// <summary>
         /// Все коллекции вопросов.
         /// </summary>
@@ -19,6 +19,10 @@ namespace Test
         /// Текущая коллекция вопросов.
         /// </summary>
         public QuestionsCollection CurrentCollection { get; private set; }
+        /// <summary>
+        /// Текущий процент выполнения теста.
+        /// </summary>
+        public int CorrectlyAnswered { get; private set; }
 
         public Form1()
         {
@@ -30,6 +34,8 @@ namespace Test
 
             foreach(var collection in Collections)
                 cbxTheme.Items.Add(collection.Theme);
+
+            CorrectlyAnswered = 0;
         }
 
         /// <summary>
@@ -52,6 +58,21 @@ namespace Test
         }
 
         /// <summary>
+        /// Сменить тему.
+        /// </summary>
+        /// <param name="theme">Название темы.</param>
+        private void ChangeTheme(string theme)
+        {
+            CurrentCollection = Collections.FirstOrDefault(c => c.Theme == theme);
+
+            CurrentQuestionNumber = ChangeQuestions(1);
+
+            btnSend.Enabled = true;
+
+            progressBar.Maximum = CurrentCollection.QuestionsCount;
+        }
+
+        /// <summary>
         /// Сменить вопрос.
         /// </summary>
         /// <param name="number">Номер вопроса.</param>
@@ -64,23 +85,13 @@ namespace Test
             {
                 tbxQuestion.Text = question.QuestionText;
 
-                // Довольно костыльная реализация -_-
                 rbtnAnswer1.Text = question.Answers.First(a => a.Number == 1).Text;
                 rbtnAnswer2.Text = question.Answers.First(a => a.Number == 2).Text;
                 rbtnAnswer3.Text = question.Answers.First(a => a.Number == 3).Text;
                 rbtnAnswer4.Text = question.Answers.First(a => a.Number == 4).Text;
             }
-            else
-            {
-                if (CurrentCollection.QuestionsCount == CurrentQuestionNumber)
-                    MessageBox.Show("Вопросы кончились!", "Вопрос не найден");
-                else
-                    MessageBox.Show("Вопрос не найден!", "Вопрос не найден");
 
-                return CurrentQuestionNumber;
-            }
-
-            progressBar.Value = number;
+            progressBar.Value = number - 1;
 
             return number;
         }
@@ -116,16 +127,21 @@ namespace Test
                         var tag = int.Parse(btn.Tag.ToString());
 
                         if (CheckAnswer(tag))
-                            CurrentQuestionNumber = ChangeQuestions(CurrentQuestionNumber + 1);
-                        else
-                            MessageBox.Show("Выбранный вами ответ - неверный!", "Неверный ответ");
+                            CorrectlyAnswered++;
+
+                        CurrentQuestionNumber = ChangeQuestions(CurrentQuestionNumber + 1);
                     }
                 }
 
             if (progressBar.Value == progressBar.Maximum)
             {
-                MessageBox.Show("Тест окончен!", "Мои поздравления! Тест был пройден!");
-                ChangeQuestions(1);
+                var percent = (CorrectlyAnswered * 100) / CurrentCollection.QuestionsCount;
+
+                MessageBox.Show("Мои поздравления! Тест был пройден на " + percent + " процентов!\n" +
+                            "правильных ответов: " + CorrectlyAnswered + "/" + CurrentCollection.QuestionsCount, "Тест окончен!");
+                ChangeTheme(CurrentCollection.Theme);
+
+                CorrectlyAnswered = 0;
             }
         }
     }
